@@ -101,7 +101,7 @@ export default function Home() {
                 </thead>
                 <tbody>
                   {(["A", "B+", "B", "C"] as const).map((gr) => (
-                    <tr>
+                    <tr key={gr}>
                       <td>{gr}</td>
                       <td>
                         {data.finalTargetScores[gr] !== -1000
