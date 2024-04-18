@@ -1,10 +1,12 @@
 "use client";
-import { useState, ChangeEvent, FormEvent } from "react";
+import { useState, ChangeEvent } from "react";
+import { useAutoAnimate } from "@formkit/auto-animate/react";
 
 export default function Home() {
   const [midtermStr, setMidtermStr] = useState("");
   const [quizStr, setQuizStr] = useState("15");
   const [data, setData] = useState<ReturnType<typeof calcGrade> | null>(null);
+  const [parent] = useAutoAnimate(/* optional config */);
 
   function handleChange(e: ChangeEvent<HTMLInputElement>) {
     const name = e.target.name;
@@ -42,7 +44,7 @@ export default function Home() {
   function handleReset() {
     setData(null);
     setMidtermStr("");
-    setQuizStr("");
+    setQuizStr("15");
   }
 
   return (
@@ -76,14 +78,14 @@ export default function Home() {
       </article>
 
       {/* Result */}
-      <div>
+      <div ref={parent}>
         {data && (
           <div>
             <article>
               <h3>Prediction</h3>
               <div>
-                ถ้าคุณทำไฟนอลได้เปอร์เช็นต์เท่ากับเปอร์เซ็นต์ของมิดเทอมคุณจะได้เกรด:{" "}
-                {data.gradeLetter}
+                ถ้าคุณทำไฟนอลได้เปอร์เช็นต์เท่ากับเปอร์เซ็นต์ของมิดเทอม (
+                {data.midtermPercent}%) คุณจะได้เกรด: {data.gradeLetter}
               </div>
             </article>
 
@@ -125,15 +127,16 @@ export default function Home() {
 
 function calcGrade(midterm: number, quiz: number) {
   const gradeCeiling = {
-    A: 71.79,
-    "B+": 66.5,
-    B: 61.21,
-    "C+": 55.92,
-    C: 50.63,
-    "D+": 45.34,
-    D: 40.05,
+    A: 72.99,
+    "B+": 67.64,
+    B: 62.3,
+    "C+": 56.95,
+    C: 51.6,
+    "D+": 46.26,
+    D: 40.91,
   };
 
+  const midtermPercent = rounded((midterm / 40) * 100);
   const totalScoreAdjusted = (midterm / 40) * 85 + quiz;
 
   let gradeLetter = "";
@@ -178,7 +181,12 @@ function calcGrade(midterm: number, quiz: number) {
     finalTargetPercents[gl] = finalTargetPercent;
   });
 
-  return { gradeLetter, finalTargetScores, finalTargetPercents };
+  return {
+    gradeLetter,
+    finalTargetScores,
+    finalTargetPercents,
+    midtermPercent,
+  };
 }
 
 function rounded(n: number) {
