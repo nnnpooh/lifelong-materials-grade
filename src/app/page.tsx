@@ -1,6 +1,7 @@
 "use client";
 import { useState, ChangeEvent } from "react";
 import { useAutoAnimate } from "@formkit/auto-animate/react";
+import '@picocss/pico/css/pico.min.css';
 
 export default function Home() {
   const [midtermStr, setMidtermStr] = useState("");
@@ -48,7 +49,7 @@ export default function Home() {
   }
 
   return (
-    <div className="container mt-4">
+    <main className="container">
       <h1>Lifelong Materials: Grade Calculation</h1>
 
       {/* Form */}
@@ -71,7 +72,7 @@ export default function Home() {
             onChange={(e) => handleChange(e)}
           />
         </div>
-        <div className="flex gap-2">
+        <div className='grid'>
           <button onClick={handleSubmit}>Submit</button>
           <button onClick={handleReset}>Reset</button>
         </div>
@@ -121,7 +122,7 @@ export default function Home() {
           </div>
         )}
       </div>
-    </div>
+    </main>
   );
 }
 

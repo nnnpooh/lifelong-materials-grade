@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
-import '@picocss/pico';
+import '@picocss/pico/css/pico.min.css';
 
 export const metadata: Metadata = {
   title: "Lifelong Materials Grade",
