@@ -5,15 +5,20 @@ export default function Home() {
     <div>
 
       <div>
-        <label htmlFor="midterm">คะแนนสอบกลางภาค (เต็ม 40%)</label>
+        <label htmlFor="midterm">คะแนนสอบกลางภาค</label>
         <input type="number" name="midterm" />
       </div>
 
       <div>
-        <label htmlFor="midterm">คะแนนเก็บ  (เต็ม 15%)</label>
+        <label htmlFor="midterm">Quiz</label>
         <input type="number" name="midterm" />
       </div>
+      <div>
 
+        <div></div>
+
+
+      </div>
 
 
     </div>
