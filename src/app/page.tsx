@@ -1,36 +1,75 @@
-import Image from "next/image";
+"use client"
+import { useState, ChangeEvent } from 'react'
+
 
 export default function Home() {
+
+  const [midtermStr, setMidtermStr] = useState('')
+  const [quizStr, setQuizStr] = useState('')
+
+
+  function handleChange(e: ChangeEvent<HTMLInputElement>) {
+    const name = e.target.name
+    const value = e.target.value
+    if (!name || !value) return null
+    if (name === 'midterm') {
+      setMidtermStr(value)
+    } else if (name === 'quiz') {
+      setQuizStr(value)
+    }
+  }
+
+
+  function handleSubmit() {
+
+
+    if (midtermStr == '' || quizStr == '') {
+      return null
+    }
+    const midterm = parseFloat(midtermStr)
+    const quiz = parseFloat(quizStr)
+
+    if (midterm < 0 || midterm > 40) {
+      return null
+    }
+
+    if (quiz < 0 || quiz > 15) {
+      return null
+    }
+
+
+  }
+
+
   return (
-    <div>
-
+    <form onSubmit={handleSubmit}>
       <div>
-        <label htmlFor="midterm">คะแนนสอบกลางภาค</label>
-        <input type="number" name="midterm" />
-      </div>
-
-      <div>
-        <label htmlFor="midterm">Quiz</label>
-        <input type="number" name="midterm" />
+        <label htmlFor="midterm">คะแนนสอบกลางภาค (0%-40%)</label>
+        <input type="number" name="midterm" value={midtermStr} onChange={(e) => handleChange(e)} />
       </div>
       <div>
+        <label htmlFor="quiz">คะแนน Quiz (0%-15%)</label>
+        <input type="number" name="quiz" value={quizStr} onChange={(e) => handleChange(e)} />
+      </div>
+      <div><button type="submit">Submit</button></div>
+      <div>
 
-        <div></div>
+        <p>
 
+          {midtermStr} {quizStr}
+        </p>
 
       </div>
 
 
-    </div>
+    </form>
   );
 }
 
 
 function calcGrade(
   midterm: number,
-  attentdance: number,
   quiz: number,
-  assignment: number
 ) {
   const gradeCeiling = {
     A: 71.79,
@@ -42,24 +81,7 @@ function calcGrade(
     D: 40.05,
   }
 
-  let finalScoreNoF = 45 - (midterm + attentdance + quiz + assignment)
-  let finalPercentNoF = (finalScoreNoF / 45) * 100
-  finalScoreNoF = rounded(finalScoreNoF)
-  finalPercentNoF = rounded(finalPercentNoF)
-
-  if (finalScoreNoF < 0) {
-    finalScoreNoF = 0
-    finalPercentNoF = 0
-  }
-
-  const mean_current = 51.774912
-  const mean_target = 55.92
-  const std_current = 10.370103
-  const std_target = 10.58
-
-  const totalScore = (midterm / 40) * 85 + attentdance + quiz + assignment
-  const totalScoreAdjusted =
-    mean_target + ((totalScore - mean_current) * std_target) / std_current
+  const totalScoreAdjusted = (midterm / 40) * 85 + quiz
 
   let gradeLetter = ""
   if (totalScoreAdjusted > gradeCeiling["A"]) {
@@ -84,11 +106,9 @@ function calcGrade(
   const finalTargetScores = {} as typeof gradeCeiling
   const finalTargetPercents = {} as typeof gradeCeiling
   gradeLetters.forEach((gl) => {
-    const totalScore =
-      ((gradeCeiling[gl] - mean_target) * std_current) / std_target +
-      mean_current
+    const totalScore = gradeCeiling[gl]
 
-    let finalTargetScore = totalScore - (attentdance + quiz + assignment + midterm)
+    let finalTargetScore = totalScore - (quiz + midterm)
     if (finalTargetScore > 45) {
       finalTargetScore = 45
     }
@@ -106,7 +126,7 @@ function calcGrade(
   })
 
 
-  return { gradeLetter, finalScoreNoF, finalPercentNoF, finalTargetScores, finalTargetPercents }
+  return { gradeLetter, finalTargetScores, finalTargetPercents }
 }
 
 function rounded(n: number) {
